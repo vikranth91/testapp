@@ -24,3 +24,11 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## pictures:
 
+![screenshot](images/pic1.png)
+
+![screenshot](images/pic2.png)
+
+![screenshot](images/pic3.png)
+
+![screenshot](images/pic4.png)
+
