@@ -22,13 +22,17 @@ npm run dev
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-## pictures:
+# Sample pictures:
 
+## signin:
 ![screenshot](images/pic1.png)
 
+## signup:
 ![screenshot](images/pic2.png)
 
+## post Create:
 ![screenshot](images/pic3.png)
 
+## Post View with Messaging:
 ![screenshot](images/pic4.png)
 
