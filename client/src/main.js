@@ -44,6 +44,12 @@ export const defaultClient = new ApolloClient({
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         console.dir(err)
+
+        if (err.name === "AuthenticationError") {
+          //set auth error in state
+          store.commit('setAuthError', err)
+          //store.dispatch('signoutUser')
+        }
       }
     }
   }
@@ -65,5 +71,6 @@ new Vue({
   created() {
     //get current user, run on every page refresh....
     this.$store.dispatch('getCurrentUser')
+    console.log('created ran')
   }
 }).$mount('#app')

@@ -67,8 +67,35 @@
         
       <!-- main area app content -->
       <main>
-        <v-container class="mt-4">
+        <v-container>
            <router-view/>
+
+           <!-- Auth snackbar -->
+           <v-snackbar v-model="authSnackbar" color="success" top rounded :timeout="3000">
+             <h4><v-icon dark class="mr-3">mdi-check</v-icon> You are now signed in!</h4>
+                   <template v-slot:action="{ attrs }">
+                    <v-btn
+                      text
+                      v-bind="attrs"
+                      @click="authSnackbar = false">
+                      Close
+                    </v-btn>
+                  </template>
+           </v-snackbar>
+
+           <!-- auth error snack bar -->
+            <v-snackbar v-if="authError" v-model="authErrorSnackbar" color="error" bottom rounded :timeout="10000">
+             <h4><v-icon dark class="mr-3">mdi-cancel</v-icon> {{authError.message}}</h4>
+                   <template v-slot:action="{ attrs }">
+                    <v-btn
+                      text
+                      v-bind="attrs"
+                      @click="authErrorSnackbar = false"
+                      to="/signin">
+                      signin
+                    </v-btn>
+                  </template>
+           </v-snackbar> 
         </v-container>
       </main>
 
@@ -80,11 +107,13 @@ export default {
   name: 'app',
   data(){
     return {
-      sideNavOpenClose: false
+      sideNavOpenClose: false,
+      authSnackbar: false,
+      authErrorSnackbar: false,
     }
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['authError','user']),
     horizontalNavItems (){
       let items = [
         {icon: "mdi-message-text" , title: "posts", link: "/posts"},
@@ -100,6 +129,22 @@ export default {
       }
       return items
     },
+  },
+  watch: {
+    user(newValue, oldValue){
+      console.log('new value', newValue)
+      console.log('old value', oldValue)
+      // if we had no value for user before, show snackbar
+      if (oldValue === null) {
+        this.authSnackbar = true
+      }
+    },
+    authError(value){
+
+      if(value !== null){
+        this.authErrorSnackbar = true
+      }
+    }
   },
   methods: {
     handleSignoutUser(){

@@ -57,11 +57,14 @@ const getUser = async token => {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    formatError: error => ({ //pararenthesis outside of function {} means returning value inside, or remove () and add return keyword
+        name: error.name,
+        message: error.message
+    }),
     context: async ({
         req
     }) => {
         const token = req.headers['authorization']
-        console.log(req.headers.referer.split('/')[3])
         return {
             User,
             Post,

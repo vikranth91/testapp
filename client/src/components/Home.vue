@@ -28,7 +28,7 @@
             show-arrows-on-hover
             v-if="!loading">
 
-            <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imageURL">
+            <v-carousel-item v-for="post in posts" :key="post._id" :src="post.imageURL" @click.native="postView(post._id)">
               <h1 id="carousel__title"> {{post.title}} </h1>
             </v-carousel-item>
 
@@ -52,6 +52,9 @@ export default {
     handleGetCarouselPosts(){
       // reach out to vuex store and fire actions that get posts for carousel
       this.$store.dispatch('getPosts')
+    },
+    postView(postId){
+      this.$router.push(`/posts/${postId}`)
     }
   },
 }

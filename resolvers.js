@@ -31,7 +31,6 @@ module.exports = {
             });
             return user
         },
-
         getPosts: async (_, args, {
             Post
         }) => {
@@ -42,9 +41,55 @@ module.exports = {
                 model: 'User'
             });
             return posts;
-        }
-    },
+        },
+        getPostView: async (_, {
+            postId
+        }, {
+            Post
+        }) => {
+            singlePost = await Post.findOne({
+                    _id: postId
+                })
+                .populate({
+                    path: 'messages.messageUser',
+                    model: 'User'
+                })
 
+            return singlePost
+        },
+        infiniteScrollPosts: async (_, {
+            pageNum,
+            pageSize
+        }, {
+            Post
+        }) => {
+            let posts;
+            if (pageNum === 1) {
+                posts = await Post.find({}).sort({
+                    createdDate: 'desc'
+                }).populate({
+                    path: 'createdBy',
+                    model: 'User'
+                }).limit(pageSize)
+            } else {
+                const skips = pageSize * (pageNum - 1);
+                posts = await Post.find({}).sort({
+                    createdDate: 'desc'
+                }).populate({
+                    path: 'createdBy',
+                    model: 'User'
+                }).skip(skips).limit(pageSize)
+            }
+
+            const totalDocs = await Post.countDocuments();
+            const hasMore = totalDocs > (pageSize * pageNum)
+
+            return {
+                posts,
+                hasMore
+            };
+        },
+    },
     Mutation: {
         addPost: async (_, {
             title,
@@ -115,6 +160,36 @@ module.exports = {
                 token: createToken(newUser, process.env.SECRET, '1hr')
             }
 
+        },
+
+        addPostMessage: async (_, {
+            messageBody,
+            postId,
+            userId
+        }, {
+            Post
+        }) => {
+            const newMessage = {
+                messageBody,
+                messageUser: userId
+            }
+            console.log('in message resolver')
+            const post = await Post.findOneAndUpdate({
+                _id: postId
+            }, {
+                $push: {
+                    messages: {
+                        $each: [newMessage],
+                        $position: 0
+                    }
+                }
+            }, {
+                new: true
+            }).populate({
+                path: 'messages.messageUser',
+                model: 'User'
+            })
+            return post.messages[0];
         }
     }
 }

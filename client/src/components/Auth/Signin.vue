@@ -23,26 +23,27 @@
 
 
                     <v-container>
+                      <v-form v-model="isFormValidated" lazy-validation @submit.prevent="handleSigninUser" ref="form">
                         <v-row no-gutters>
                             <v-flex xs12>
-                                <v-text-field prepend-icon = "mdi-account" label="Username" type="text" required v-model="username"></v-text-field>
+                                <v-text-field :rules="usernameRules" prepend-icon = "mdi-account" label="Username" type="text" required v-model="username"></v-text-field>
                             </v-flex>
                         </v-row>
 
                         <v-row no-gutters>
                             <v-flex xs12>
-                                <v-text-field prepend-icon = "mdi-form-textbox" label="Password" type="text" required v-model="password"></v-text-field>
+                                <v-text-field :rules="passwordRules" prepend-icon = "mdi-form-textbox" label="Password" type="text" required v-model="password"></v-text-field>
                             </v-flex>
                         </v-row>
 
                         <v-row no-gutters>
                             <v-flex xs12>
-                                <v-btn color="primary" type="submit" :loading="loading" :disabled="loading">Signin <v-icon size="20">mdi-login</v-icon></v-btn>
+                                <v-btn color="primary" type="submit" :loading="loading" :disabled="loading || !isFormValidated">Signin <v-icon size="20">mdi-login</v-icon></v-btn>
                                 <h3>Dont have an Account? <router-link to="/signup">Signup</router-link> </h3>
                                 
                             </v-flex>
                         </v-row>
-
+                      </v-form>
                     </v-container>
                 </v-card>
                 </v-form>
@@ -59,8 +60,19 @@ export default {
     name: "Signin",
     data() {
         return {
+          isFormValidated: true,
             username: '',
-            password:''
+            password:'',
+            usernameRules: [
+              //check if username in
+              username => !!username || 'username is required',
+              //make sure username is less than 10 character
+              username => username.length > 6 || 'username must be more than 6 characters'
+            ],
+            passwordRules: [
+              password => !!password || 'Password is required',
+              password => password.length >= 6 || 'Password must be more than 6 characters'
+            ]
         }
     },
     computed: {
@@ -80,10 +92,12 @@ export default {
     },
     methods: {
         handleSigninUser(){
-           this.$store.dispatch('signinuser', {
-               username: this.username,
-               password: this.password
-           }) 
+          if (this.$refs.form.validate()) {
+            this.$store.dispatch('signinuser', {
+                username: this.username,
+                password: this.password
+            }) 
+          }
         }
     },
 }

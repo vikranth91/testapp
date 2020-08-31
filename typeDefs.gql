@@ -26,17 +26,25 @@ type Post {
 
 type Message{
     _id: ID,
-    messageBody: String!,
+    messageBody: String,
     messageDate: String,
-    messageUser: [User]!
+    messageUser: User
+}
+
+type PostsPage{
+    posts: [Post],
+    hasMore: Boolean
 }
 
 type Query{
     getPosts: [Post]
     getCurrentUser: User
+    infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage,
+    getPostView(postId: ID!): Post!
 }
 
 type Mutation{
+    addPostMessage(messageBody: String!, MessageDate: String, userId: ID!, postId: ID!): Message!
     addPost(title: String!, imageURL:String!,categories:[String]!, description:String!, createrId: ID!): Post!
     signUpUser(username: String!, email:String!, password: String!): Token
     signInUser(username: String!, password:String!): Token
