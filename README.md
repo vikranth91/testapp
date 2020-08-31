@@ -1,6 +1,6 @@
 # fullstack-vue-post-sharing-WebApp
 
-##Tools: Node JS, Express Server, Mongodb, Apollo Graphql API, JsonWebToken and Vue front end frame work integration
+## Tools: Node JS, Express Server, Mongodb, Apollo Graphql API, JsonWebToken and Vue front end frame work integration
 
 # client + Server
 
@@ -21,3 +21,6 @@ npm run dev
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## pictures:
+
